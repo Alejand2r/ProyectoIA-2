@@ -46,9 +46,6 @@ def imprimir():
         root.update()
         time.sleep(0.10)
     
-# Actualizar los valores de las etiquetas
-def actualizarValores(expand, prof, tiem, cost):
-    etiqueta_costo.config(text='Costo de la solución: ' + str(cost))
 
 def cerrar_ventana():
     root.destroy()
@@ -69,13 +66,13 @@ def mostrar_interfaz():
 
 #Cargar Imagenes
 
-img_HorseIA = Image.open('media/IA.png') #caballo blanco de la IA
-img_HorsePlayer= Image.open('media/player.png') #caballo negro del jugador 
+img_HorseIA, img_HorsePlayer, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, Img_Cinco, Img_Seis, Img_Siete = Image.open('media/IA.png'), Image.open('media/player.png'), Image.open('media/1.png'), Image.open('media/2.png'), Image.open('media/3.png'), Image.open('media/4.png'), Image.open('media/5.png'), Image.open('media/6.png'), Image.open('media/7.png')  
 
-img_HorseIA, img_HorsePlayer = img_HorseIA((cell_size - 2, cell_size - 2, )), img_HorsePlayer((cell_size - 2, cell_size - 2))
+
+img_HorseIA, img_HorsePlayer = img_HorseIA((cell_size - 2, cell_size - 2, )), img_HorsePlayer((cell_size - 2, cell_size - 2)), Img_Uno((cell_size -2, cell_size - 2)), Img_Dos((cell_size -2, cell_size - 2)), Img_Tres((cell_size -2, cell_size - 2)), Img_Cuatro((cell_size -2, cell_size - 2)), Img_Cinco((cell_size -2, cell_size - 2)), Img_Seis((cell_size -2, cell_size - 2)), Img_Siete((cell_size -2, cell_size - 2))
 
 #Formate compatible con tkinter
 
-img_HorseIA, img_HorsePlayer = ImageTk.PhotoImage(img_HorseIA), ImageTk.PhotoImage(img_HorsePlayer)    
+img_HorseIA, img_HorsePlayer = ImageTk.PhotoImage(img_HorseIA), ImageTk.PhotoImage(img_HorsePlayer), ImageTk.PhotoImage(Img_Uno), ImageTk.PhotoImage(Img_Dos), ImageTk.PhotoImage(Img_Tres), ImageTk.PhotoImage(Img_Cuatro), ImageTk.PhotoImage(Img_Cinco), ImageTk.PhotoImage(Img_Seis), ImageTk.PhotoImage(Img_Siete)    
 
 solucion = []
