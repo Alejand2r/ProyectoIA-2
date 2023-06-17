@@ -69,7 +69,7 @@ def seleccionar_interfaz():
 img_HorseIA, img_HorsePlayer, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, Img_Cinco, Img_Seis, Img_Siete = Image.open('media/IA.png'), Image.open('media/player.png'), Image.open('media/1.png'), Image.open('media/2.png'), Image.open('media/3.png'), Image.open('media/4.png'), Image.open('media/5.png'), Image.open('media/6.png'), Image.open('media/7.png')  
 
 
-img_HorseIA, img_HorsePlayer = img_HorseIA((cell_size - 2, cell_size - 2, )), img_HorsePlayer((cell_size - 2, cell_size - 2)), Img_Uno((cell_size -2, cell_size - 2)), Img_Dos((cell_size -2, cell_size - 2)), Img_Tres((cell_size -2, cell_size - 2)), Img_Cuatro((cell_size -2, cell_size - 2)), Img_Cinco((cell_size -2, cell_size - 2)), Img_Seis((cell_size -2, cell_size - 2)), Img_Siete((cell_size -2, cell_size - 2))
+img_HorseIA, img_HorsePlayer, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, Img_Cinco, Img_Seis, Img_Siete = img_HorseIA((cell_size - 2, cell_size - 2, )), img_HorsePlayer((cell_size - 2, cell_size - 2)), Img_Uno((cell_size -2, cell_size - 2)), Img_Dos((cell_size -2, cell_size - 2)), Img_Tres((cell_size -2, cell_size - 2)), Img_Cuatro((cell_size -2, cell_size - 2)), Img_Cinco((cell_size -2, cell_size - 2)), Img_Seis((cell_size -2, cell_size - 2)), Img_Siete((cell_size -2, cell_size - 2))
 
 #Formate compatible con tkinter
 
