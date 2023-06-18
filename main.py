@@ -3,7 +3,7 @@ from tkinter import filedialog
 import time
 from PIL import Image, ImageTk
 import easygui as eg
-
+from node import Nodo
 WINDOW_SIZE = 700
 
 with open("input.txt", "r") as read_file:
@@ -11,21 +11,12 @@ with open("input.txt", "r") as read_file:
     estado_inicial = ""
     for row in matriz:
         for cell in row.split():
-            if cell == '0':
-                estado_inicial += '0'
-            elif int(cell) in range(1, 8):
-                estado_inicial += cell
-            elif cell == '8':
-                estado_inicial += 'b'
-            elif cell == '9':
-                estado_inicial += 'n'
-            else:
-                "error"
+            estado_inicial += cell
 root = tk.Tk()
 root.title("Smart Horses")
 root.resizable(False, False)
 
-canvas = tk.Canvas(root, width=WINDOW_SIZE - 50, height=WINDOW_SIZE)
+canvas = tk.Canvas(root, width=WINDOW_SIZE - 55, height=WINDOW_SIZE-5)
 canvas.pack()
 
 cell_size = (WINDOW_SIZE - 50) // 8
@@ -56,7 +47,7 @@ def new_play():
     pass
 
 #funcion que dibuja el tablero apartir de un estado
-def draw_map(estado: str):
+def draw_map(nodo: Nodo):
     images = {
         "0": Img_Cero,
         "1": Img_Uno,
@@ -66,49 +57,26 @@ def draw_map(estado: str):
         "5": Img_Cinco,
         "6": Img_Seis,
         "7": Img_Siete,
-        "b": img_HorseIA,
-        "n": img_HorsePlayer
+        "8": img_HorseIA,
+        "9": img_HorsePlayer
     }
-    #Busca las posiciones en la que el usuario
-    player_pos = estado.index("n")
-    player_pos_x, player_pos_y = player_pos // 8, player_pos % 8
-    posible_next_plax_pos = []
-    if player_pos_x > 1:
-        if player_pos_y > 0:
-            posible_next_plax_pos.append(player_pos - 17)
-        if player_pos_y < 7:
-            posible_next_plax_pos.append(player_pos - 15)
-    if player_pos_y < 6:
-        if player_pos_x > 0:
-            posible_next_plax_pos.append(player_pos - 6)
-        if player_pos_x < 7:
-            posible_next_plax_pos.append(player_pos + 10)
-    if player_pos_x < 6:
-        if player_pos_y > 0:
-            posible_next_plax_pos.append(player_pos + 15)
-        if player_pos_y < 7:
-            posible_next_plax_pos.append(player_pos + 17)
-    if player_pos_y > 1:
-        if player_pos_x > 0:
-            posible_next_plax_pos.append(player_pos - 10)
-        if player_pos_x < 7:
-            posible_next_plax_pos.append(player_pos + 6)
-
     for row_idx in range(8):
         for col_idx in range(8): #se pone un boton en caso de ser una jugada posible, caso contrario una imagen
-            if (row_idx * 8 + col_idx) in posible_next_plax_pos:
+            if (row_idx * 8 + col_idx) in nodo.get_posible_next_play_player():
                 x = col_idx * cell_size
                 y = row_idx * cell_size + 50
-                button = tk.Button(root, image=images.get(estado[row_idx * 8 + col_idx]), command=new_play)
+                button = tk.Button(root, image=images.get(nodo.estado[row_idx * 8 + col_idx]), command=new_play)
                 button.pack(pady=20)
                 button.place(x=x, y=y)
             else:
                 x = (col_idx + 1 / 2) * cell_size
                 y = (row_idx + 1 / 2) * cell_size + 50
-                canvas.create_image(x, y, image=images.get(estado[row_idx * 8 + col_idx]))
+                canvas.create_image(x, y, image=images.get(nodo.estado[row_idx * 8 + col_idx]))
+
+draw_map(Nodo(estado=estado_inicial))
+#dificultad = eg.buttonbox("Seleccione la dificultad:", choices=["Principiante", "Amateur", "Experto"])
 
 
-draw_map(estado_inicial)
 root.mainloop()
 
 
