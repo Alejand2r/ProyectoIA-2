@@ -4,19 +4,21 @@ import time
 from PIL import Image, ImageTk
 import easygui as eg
 from node import Nodo
+import random
+
 WINDOW_SIZE = 700
 
 with open("input.txt", "r") as read_file:
     matriz = read_file.readlines()
-    estado_inicial = ""
+    estado_inicial_ing = ""
     for row in matriz:
         for cell in row.split():
-            estado_inicial += cell
+            estado_inicial_ing += cell
 root = tk.Tk()
 root.title("Smart Horses")
 root.resizable(False, False)
 
-canvas = tk.Canvas(root, width=WINDOW_SIZE - 55, height=WINDOW_SIZE-5)
+canvas = tk.Canvas(root, width=WINDOW_SIZE - 55, height=WINDOW_SIZE - 5)
 canvas.pack()
 
 cell_size = (WINDOW_SIZE - 50) // 8
@@ -42,11 +44,13 @@ img_HorseIA, img_HorsePlayer, Img_Cero, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, 
     Img_Cinco), ImageTk.PhotoImage(Img_Seis), ImageTk.PhotoImage(
     Img_Siete)
 
-#funcion a ejecutar cuando el usuario hace una jugada
+
+# funcion a ejecutar cuando el usuario hace una jugada
 def new_play():
     pass
 
-#funcion que dibuja el tablero apartir de un estado
+
+# funcion que dibuja el tablero apartir de un estado
 def draw_map(nodo: Nodo):
     images = {
         "0": Img_Cero,
@@ -61,7 +65,7 @@ def draw_map(nodo: Nodo):
         "9": img_HorsePlayer
     }
     for row_idx in range(8):
-        for col_idx in range(8): #se pone un boton en caso de ser una jugada posible, caso contrario una imagen
+        for col_idx in range(8):  # se pone un boton en caso de ser una jugada posible, caso contrario una imagen
             if (row_idx * 8 + col_idx) in nodo.get_posible_next_play_player():
                 x = col_idx * cell_size
                 y = row_idx * cell_size + 50
@@ -73,12 +77,59 @@ def draw_map(nodo: Nodo):
                 y = (row_idx + 1 / 2) * cell_size + 50
                 canvas.create_image(x, y, image=images.get(nodo.estado[row_idx * 8 + col_idx]))
 
-draw_map(Nodo(estado=estado_inicial))
-#dificultad = eg.buttonbox("Seleccione la dificultad:", choices=["Principiante", "Amateur", "Experto"])
+
+def iniciarJuego(dificultad):
+    button_dif_principiante.place_forget()
+    button_dif_amateur.place_forget()
+    button_dif_experto.place_forget()
+    if dificultad == "Principiante":
+        print(2)
+    elif dificultad == "Amateur":
+        print(4)
+    else:
+        print(6)
 
 
+def seleccionaEstadoInicial(modalidad):
+    button_est_ingresar.place_forget()
+    button_est_generar.place_forget()
+    button_dif_principiante.pack(pady=20)
+    button_dif_principiante.place(x=150, y=15)
+
+    button_dif_amateur.pack(pady=20)
+    button_dif_amateur.place(x=310, y=15)
+
+    button_dif_experto.pack(pady=20)
+    button_dif_experto.place(x=450, y=15)
+
+    if modalidad == "Ingresar estado":
+        draw_map(Nodo(estado=estado_inicial_ing))
+    else:
+        estado_inicial_gen = ['0'] * 64
+        for num in range(1, 10):
+            posicion = random.randint(0, 63)
+            while estado_inicial_gen[posicion] != '0':
+                posicion = random.randint(0, 63)
+            estado_inicial_gen[posicion] = str(num)
+        estado_inicial_gen = ''.join(estado_inicial_gen)
+        draw_map(Nodo(estado=estado_inicial_gen))
+
+
+#
+button_dif_principiante, button_dif_amateur, button_dif_experto = \
+    tk.Button(root, text="Principiante", command=lambda: iniciarJuego("Principiante")), \
+        tk.Button(root, text="Amateur", command=lambda: iniciarJuego("Amateur")), \
+        tk.Button(root, text="Experto", command=lambda: iniciarJuego("Experto"))
+
+button_est_generar = tk.Button(root, text="Generar estado", command=lambda: seleccionaEstadoInicial("Generar estado"))
+button_est_ingresar = tk.Button(root, text="Ingresar estado", command=lambda: seleccionaEstadoInicial("Ingresar estado"))
+
+button_est_generar.pack(pady=20)
+button_est_generar.place(x=190, y=15)
+
+button_est_ingresar.pack(pady=20)
+button_est_ingresar.place(x=340, y=15)
 root.mainloop()
-
 
 # def draw_map(canvas, map_data):
 #     global images
