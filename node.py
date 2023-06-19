@@ -1,33 +1,40 @@
+
 class Nodo:
-    def __init__(self, estado: str, player_points: int = 0, machine_points: int = 0):
-        self.estado = estado
-        self.player_pos = estado.index("9")
-        self.machine_pos = estado.index("8")
+    def __init__(self, state: str, player_points: int = 0, machine_points: int = 0, player_move: bool = False,
+                 max_deep: int = 2, parent=None, deep: int = 0):
+        self.state = state
+        self.player_pos = state.index("9")
+        self.machine_pos = state.index("8")
         self.player_points = player_points
         self.machine_points = machine_points
+        self.player_move = player_move
+        self.max_deep = max_deep
+        self.parent = parent
+        self.deep = deep
+        self.branch_end = all([str(num) not in state for num in range(1, 8)])
 
     def __get_posible_next_play(self, pos):
         pos_x, pos_y = pos // 8, pos % 8
         posible_next_play = []
         if pos_x > 1:
-            if pos_y > 0 and int(self.estado[pos - 17]) in range(8):
+            if pos_y > 0 and int(self.state[pos - 17]) in range(8):
                 posible_next_play.append(pos - 17)
-            if pos_y < 7 and int(self.estado[pos - 15]) in range(8):
+            if pos_y < 7 and int(self.state[pos - 15]) in range(8):
                 posible_next_play.append(pos - 15)
         if pos_y < 6:
-            if pos_x > 0 and int(self.estado[pos - 6]) in range(8):
+            if pos_x > 0 and int(self.state[pos - 6]) in range(8):
                 posible_next_play.append(pos - 6)
-            if pos_x < 7 and int(self.estado[pos + 10]) in range(8):
+            if pos_x < 7 and int(self.state[pos + 10]) in range(8):
                 posible_next_play.append(pos + 10)
         if pos_x < 6:
-            if pos_y > 0 and int(self.estado[pos + 15]) in range(8):
+            if pos_y > 0 and int(self.state[pos + 15]) in range(8):
                 posible_next_play.append(pos + 15)
-            if pos_y < 7 and int(self.estado[pos + 17]) in range(8):
+            if pos_y < 7 and int(self.state[pos + 17]) in range(8):
                 posible_next_play.append(pos + 17)
         if pos_y > 1:
-            if pos_x > 0 and int(self.estado[pos - 10]) in range(8):
+            if pos_x > 0 and int(self.state[pos - 10]) in range(8):
                 posible_next_play.append(pos - 10)
-            if pos_x < 7 and int(self.estado[pos + 6]) in range(8):
+            if pos_x < 7 and int(self.state[pos + 6]) in range(8):
                 posible_next_play.append(pos + 6)
         return posible_next_play
 
@@ -36,3 +43,15 @@ class Nodo:
 
     def get_posible_next_play_machine(self):
         return self.__get_posible_next_play(self.machine_pos)
+
+    def set_max_deep(self, max_deep):
+        self.max_deep = max_deep
+
+    def get_branch(self):
+        branch = []
+        current_node = self
+        while current_node is not None:
+            branch.append(current_node)
+            current_node = current_node.parent
+        branch.reverse()
+        return branch
