@@ -1,10 +1,10 @@
 import random
 import tkinter as tk
-from minimax import minimax
-import easygui
-from PIL import Image, ImageTk
-from functools import  partial 
+from functools import partial
 
+from PIL import Image, ImageTk
+
+from minimax import minimax
 from node import Nodo
 
 WINDOW_SIZE = 700
@@ -24,11 +24,10 @@ canvas.pack()
 
 cell_size = (WINDOW_SIZE - 50) // 8
 nodo = None
-img_HorseIA, img_HorsePlayer, Img_Cero, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, Img_Cinco, Img_Seis, Img_Siete = Image.open(
-    'media/IA.png'), Image.open('media/player.png'), Image.open('media/0.png'), Image.open('media/1.png'), Image.open(
-    'media/2.png'), Image.open(
-    'media/3.png'), Image.open('media/4.png'), Image.open('media/5.png'), Image.open('media/6.png'), Image.open(
-    'media/7.png')
+img_HorseIA, img_HorsePlayer, Img_Cero, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, Img_Cinco, Img_Seis, Img_Siete = \
+    Image.open('media/IA.png'), Image.open('media/player.png'), Image.open('media/0.png'), Image.open('media/1.png'), \
+        Image.open('media/2.png'), Image.open('media/3.png'), Image.open('media/4.png'), Image.open('media/5.png'), \
+        Image.open('media/6.png'), Image.open('media/7.png')
 
 img_HorseIA, img_HorsePlayer, Img_Cero, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, Img_Cinco, Img_Seis, Img_Siete = img_HorseIA.resize(
     (cell_size - 2, cell_size - 2)), img_HorsePlayer.resize((cell_size - 2, cell_size - 2)), Img_Cero.resize(
@@ -46,17 +45,21 @@ img_HorseIA, img_HorsePlayer, Img_Cero, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, 
     Img_Siete)
 
 
-
-
 def new_play(Pos):
     global nodo
     nuevo_nodo = nodo.make_player_move(Pos)
     nodo = nuevo_nodo
+    draw_map()
+    label_estado.config(text=f"Jugador: {nodo.player_points}   Maquina: {nodo.machine_points}")
     utility, siguiente_nodo = minimax(nodo, profundidad=Profundidad)
     nodo = siguiente_nodo
-    draw_map()
+    canvas.after(400, draw_map)
+    label_estado.config(text=f"Jugador: {nodo.player_points}   Maquina: {nodo.machine_points}")
+
 
 button_opt = []
+
+
 # funcion que dibuja el tablero apartir de un estado
 def draw_map():
     global button_opt
@@ -65,7 +68,14 @@ def draw_map():
         for button in button_opt:
             button.place_forget()
         button_opt = []
-    canvas.delete("all")
+    if nodo.game_end:
+        if nodo.machine_points == nodo.player_points:
+            message = f"Hubo un empate con {nodo.player_points} puntos"
+        elif nodo.machine_points < nodo.player_points:
+            message = f"Felicidades ganaste con {nodo.player_points} puntos"
+        else:
+            message = f"Has perdido con {nodo.player_points} puntos a {nodo.machine_points}"
+        label_estado.config(text=message)
     images = {
         "0": Img_Cero,
         "1": Img_Uno,
@@ -80,10 +90,11 @@ def draw_map():
     }
     for row_idx in range(8):
         for col_idx in range(8):  # se pone un boton en caso de ser una jugada posible, caso contrario una imagen
-            if nodo.player_move and (row_idx * 8 + col_idx) in nodo.get_posible_next_play_player():
-                x = col_idx * cell_size 
+            if not nodo.game_end and nodo.player_move and (row_idx * 8 + col_idx) in nodo.get_posible_next_play_player():
+                x = col_idx * cell_size
                 y = row_idx * cell_size + 50
-                button = tk.Button(root, image=images.get(nodo.state[row_idx * 8 + col_idx]), command=partial(new_play, row_idx * 8 + col_idx))
+                button = tk.Button(root, image=images.get(nodo.state[row_idx * 8 + col_idx]),
+                                   command=partial(new_play, row_idx * 8 + col_idx))
                 button_opt.append(button)
                 button.pack(pady=20)
                 button.place(x=x, y=y)
@@ -99,6 +110,9 @@ def iniciarJuego(dificultad):
     button_dif_principiante.place_forget()
     button_dif_amateur.place_forget()
     button_dif_experto.place_forget()
+    label_estado.place_forget()
+    label_estado.place(x=200, y=15)
+    label_estado.config(text=f"Jugador: {nodo.player_points}   Maquina: {nodo.machine_points}")
     if dificultad == "Principiante":
         profundidad = 2
     elif dificultad == "Amateur":
@@ -109,7 +123,7 @@ def iniciarJuego(dificultad):
     utility, siguiente_nodo = minimax(nodo, profundidad=profundidad)
     Profundidad = profundidad
     nodo = siguiente_nodo
-    draw_map()
+    canvas.after(400, draw_map)
 
 
 def seleccionaEstadoInicial(modalidad):
@@ -117,13 +131,15 @@ def seleccionaEstadoInicial(modalidad):
     button_est_ingresar.place_forget()
     button_est_generar.place_forget()
     button_dif_principiante.pack(pady=20)
-    button_dif_principiante.place(x=150, y=15)
+    button_dif_principiante.place(x=200, y=15)
 
     button_dif_amateur.pack(pady=20)
-    button_dif_amateur.place(x=310, y=15)
+    button_dif_amateur.place(x=360, y=15)
 
     button_dif_experto.pack(pady=20)
-    button_dif_experto.place(x=450, y=15)
+    button_dif_experto.place(x=500, y=15)
+    label_estado.pack(pady=20)
+    label_estado.place(x=30, y=15)
 
     if modalidad == "Ingresar estado":
         nodo = Nodo(state=estado_inicial_ing)
@@ -155,7 +171,7 @@ button_est_generar.place(x=190, y=15)
 button_est_ingresar.pack(pady=20)
 button_est_ingresar.place(x=340, y=15)
 # respuesta = easygui.buttonbox("Seleccione la dificultad:", choices=["Principiante", "Amateur", "Experto"])
-
+label_estado = tk.Label(root, text="Dificultad: ", font=("Verdana", 12))
 root.mainloop()
 
 # def draw_map(canvas, map_data):

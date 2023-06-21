@@ -11,7 +11,7 @@ class Nodo:
         self.max_deep = max_deep
         self.parent = parent
         self.deep = deep
-        self.branch_end = all([str(num) not in state for num in range(1, 8)])
+        self.game_end = all([str(num) not in state for num in range(1, 8)])
 
     def __get_posible_next_play(self, pos):
         pos_x, pos_y = pos // 8, pos % 8

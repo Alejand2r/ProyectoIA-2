@@ -6,8 +6,8 @@ def heuristica(nodo):
 
 
 def minimax(nodo, profundidad, alfa=float('-inf'), beta=float('inf')) -> tuple[int, Nodo]:
-    if profundidad == 0 or nodo.branch_end:
-        return heuristica(nodo), None
+    if profundidad == 0 or nodo.game_end:
+        return heuristica(nodo), nodo
     if not nodo.player_move:
         valor_max, siguiente_nodo = float('-inf'), None
         for jugada in nodo.get_posible_next_play_machine():
