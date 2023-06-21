@@ -55,3 +55,14 @@ class Nodo:
             current_node = current_node.parent
         branch.reverse()
         return branch
+    
+    def make_player_move(self, new_position: int):
+        puntos_recolectados = 0
+        if self.state[new_position] != 0:
+            puntos_recolectados = int(self.state[new_position])
+        nuevo_estado = self.state[:self.player_pos] + "0" + self.state[self.player_pos + 1:]
+        nuevo_estado = nuevo_estado[:new_position] + "9" + nuevo_estado[new_position + 1:]
+        nuevo_nodo = Nodo(state=nuevo_estado, player_points=self.player_points + puntos_recolectados,
+                              machine_points=self.machine_points, player_move=False,
+                              max_deep=self.max_deep, parent=self, deep=self.deep + 1)
+        return nuevo_nodo

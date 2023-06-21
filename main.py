@@ -3,6 +3,7 @@ import tkinter as tk
 from minimax import minimax
 import easygui
 from PIL import Image, ImageTk
+from functools import  partial 
 
 from node import Nodo
 
@@ -45,14 +46,27 @@ img_HorseIA, img_HorsePlayer, Img_Cero, Img_Uno, Img_Dos, Img_Tres, Img_Cuatro, 
     Img_Siete)
 
 
-# funcion a ejecutar cuando el usuario hace una jugada
-def new_play():
-    pass
+def calculate_position(x, y):
+    row = (y - 50) // cell_size
+    col = x // cell_size
+    return row * 8 + col
+
+def new_play(Pos):
+    global nodo
+    nuevo_nodo = nodo.make_player_move(Pos)
+    print(nodo.state)
+    print(nuevo_nodo.state, nuevo_nodo.player_move)
+    nodo = nuevo_nodo
+    for i in range(8):
+        for j in range(8):
+            print(nodo.state[i*8+j], sep=" ", end = " " )
+        print("\n")    
+    draw_map(nuevo_nodo)  
 
 
 # funcion que dibuja el tablero apartir de un estado
-def draw_map():
-    global nodo
+def draw_map(nodo):
+    canvas.delete("all")
     images = {
         "0": Img_Cero,
         "1": Img_Uno,
@@ -68,9 +82,10 @@ def draw_map():
     for row_idx in range(8):
         for col_idx in range(8):  # se pone un boton en caso de ser una jugada posible, caso contrario una imagen
             if nodo.player_move and (row_idx * 8 + col_idx) in nodo.get_posible_next_play_player():
-                x = col_idx * cell_size
+                #print(row_idx * 8 + col_idx, "draw map")
+                x = col_idx * cell_size 
                 y = row_idx * cell_size + 50
-                button = tk.Button(root, image=images.get(nodo.state[row_idx * 8 + col_idx]), command=new_play)
+                button = tk.Button(root, image=images.get(nodo.state[row_idx * 8 + col_idx]), command=partial(new_play, row_idx * 8 + col_idx))
                 button.pack(pady=20)
                 button.place(x=x, y=y)
             else:
@@ -93,7 +108,7 @@ def iniciarJuego(dificultad):
     nodo.set_max_deep(profundidad)
     utility, siguiente_nodo = minimax(nodo, profundidad=profundidad)
     nodo = siguiente_nodo
-    draw_map()
+    draw_map(nodo)
 
 
 def seleccionaEstadoInicial(modalidad):
@@ -120,7 +135,7 @@ def seleccionaEstadoInicial(modalidad):
             estado_inicial_gen[posicion] = str(num)
         estado_inicial_gen = ''.join(estado_inicial_gen)
         nodo = Nodo(state=estado_inicial_gen)
-    draw_map()
+    draw_map(nodo)
 
 
 #
