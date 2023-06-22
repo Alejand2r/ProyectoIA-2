@@ -74,8 +74,11 @@ def draw_map():
         elif nodo.machine_points < nodo.player_points:
             message = f"Felicidades ganaste con {nodo.player_points} puntos"
         else:
-            message = f"Has perdido con {nodo.player_points} puntos a {nodo.machine_points}"
+            message = f"Has perdido {nodo.player_points} puntos a {nodo.machine_points}"
         label_estado.config(text=message)
+        button_reinicio.pack
+        button_reinicio.pack(pady=20)
+        button_reinicio.place(x=500, y=15)
     images = {
         "0": Img_Cero,
         "1": Img_Uno,
@@ -123,6 +126,7 @@ def iniciarJuego(dificultad):
     utility, siguiente_nodo = minimax(nodo, profundidad=profundidad)
     Profundidad = profundidad
     nodo = siguiente_nodo
+    label_estado.config(text=f"Jugador: {nodo.player_points}   Maquina: {nodo.machine_points}")
     canvas.after(400, draw_map)
 
 
@@ -170,8 +174,17 @@ button_est_generar.place(x=190, y=15)
 
 button_est_ingresar.pack(pady=20)
 button_est_ingresar.place(x=340, y=15)
+def reiniciarJuego():
+    canvas.delete("all")
+    label_estado.place_forget()
+    label_estado.config(text="Dificultad: ")
+    button_reinicio.place_forget()
+    button_est_generar.place(x=190, y=15)
+    button_est_ingresar.place(x=340, y=15)
+
 # respuesta = easygui.buttonbox("Seleccione la dificultad:", choices=["Principiante", "Amateur", "Experto"])
 label_estado = tk.Label(root, text="Dificultad: ", font=("Verdana", 12))
+button_reinicio = tk.Button(root, text="Reiniciar", command=reiniciarJuego)
 root.mainloop()
 
 # def draw_map(canvas, map_data):
